@@ -13,7 +13,7 @@ export function useChat(chatType: "general" | "private" = "general", userId?: st
     queryKey: ["/api/users"],
   });
 
-  // Fetch messages
+  // Fetch messages with reduced polling
   const { data: messages = [], isLoading } = useQuery<MessageWithUser[]>({
     queryKey: ["/api/messages", chatType, userId],
     queryFn: async () => {
@@ -25,6 +25,8 @@ export function useChat(chatType: "general" | "private" = "general", userId?: st
       if (!response.ok) throw new Error("Failed to fetch messages");
       return response.json();
     },
+    refetchInterval: 10000, // Reduce to 10 seconds instead of constant polling
+    refetchOnWindowFocus: false,
   });
 
   // Set current user ID from the first available user
@@ -71,9 +73,26 @@ export function useChat(chatType: "general" | "private" = "general", userId?: st
             );
           });
         } else if (data.type === "message") {
-          // New message received
+          // New message received - add to cache immediately
           console.log('💬 New message received');
-          queryClient.invalidateQueries({ queryKey: ["/api/messages"] });
+          const newMessage = data.data;
+          
+          // Add to current chat cache
+          queryClient.setQueryData<MessageWithUser[]>(["/api/messages", chatType, userId], (oldMessages) => {
+            if (!oldMessages) return [newMessage];
+            // Check if message already exists to avoid duplicates
+            const exists = oldMessages.some(msg => msg.id === newMessage.id);
+            return exists ? oldMessages : [...oldMessages, newMessage];
+          });
+          
+          // Also add to general cache if needed
+          if (chatType !== "general" || userId) {
+            queryClient.setQueryData<MessageWithUser[]>(["/api/messages", "general", undefined], (oldMessages) => {
+              if (!oldMessages) return [newMessage];
+              const exists = oldMessages.some(msg => msg.id === newMessage.id);
+              return exists ? oldMessages : [...oldMessages, newMessage];
+            });
+          }
         }
       } catch (error) {
         console.error('Error parsing WebSocket message:', error);
@@ -87,7 +106,7 @@ export function useChat(chatType: "general" | "private" = "general", userId?: st
     };
   }, [socket, queryClient, chatType, userId]);
 
-  // Send message mutation
+  // Send message mutation with optimistic updates
   const sendMessageMutation = useMutation({
     mutationFn: async (data: { 
       content: string; 
@@ -117,14 +136,56 @@ export function useChat(chatType: "general" | "private" = "general", userId?: st
       const response = await apiRequest("POST", "/api/messages", messageData);
       return response.json();
     },
-    onSuccess: (_, variables) => {
-      // Обновляем кэш для текущего типа чата
+    onMutate: async (variables) => {
+      // Cancel outgoing refetches
+      await queryClient.cancelQueries({ queryKey: ["/api/messages"] });
+
+      // Create optimistic message
+      const user = users.find(u => u.id === variables.userId);
+      const optimisticMessage: MessageWithUser = {
+        id: `temp-${Date.now()}`, // Temporary ID
+        content: variables.content,
+        userId: variables.userId,
+        isAI: false,
+        isTyping: false,
+        chatType: variables.chatType || "general",
+        privateChatUserId: variables.privateChatUserId || null,
+        timestamp: new Date(),
+        attachments: variables.attachments?.map(file => file.url) || null,
+        attachmentTypes: variables.attachments?.map(file => file.mimetype) || null,
+        attachmentNames: variables.attachments?.map(file => file.originalName) || null,
+        user: user || undefined,
+      };
+
+      // Add optimistic update to cache
       const actualChatType = variables.chatType || "general";
       const actualUserId = variables.privateChatUserId;
-      queryClient.invalidateQueries({ queryKey: ["/api/messages", actualChatType, actualUserId] });
       
-      // Дополнительно обновляем общий кэш сообщений
-      queryClient.invalidateQueries({ queryKey: ["/api/messages"] });
+      queryClient.setQueryData<MessageWithUser[]>(["/api/messages", actualChatType, actualUserId], (oldMessages) => {
+        return [...(oldMessages || []), optimisticMessage];
+      });
+
+      return { optimisticMessage };
+    },
+    onSuccess: (newMessage, variables, context) => {
+      // Replace optimistic message with real one
+      const actualChatType = variables.chatType || "general";
+      const actualUserId = variables.privateChatUserId;
+      
+      queryClient.setQueryData<MessageWithUser[]>(["/api/messages", actualChatType, actualUserId], (oldMessages) => {
+        return (oldMessages || []).map(msg => 
+          msg.id === context?.optimisticMessage.id ? newMessage : msg
+        );
+      });
+    },
+    onError: (error, variables, context) => {
+      // Remove optimistic update on error
+      const actualChatType = variables.chatType || "general";
+      const actualUserId = variables.privateChatUserId;
+      
+      queryClient.setQueryData<MessageWithUser[]>(["/api/messages", actualChatType, actualUserId], (oldMessages) => {
+        return (oldMessages || []).filter(msg => msg.id !== context?.optimisticMessage.id);
+      });
     },
   });
 
