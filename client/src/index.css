@@ -1,0 +1,235 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+:root {
+  --background: hsl(0 0% 100%);
+  --foreground: hsl(210 25% 7.8431%);
+  --card: hsl(180 6.6667% 97.0588%);
+  --card-foreground: hsl(210 25% 7.8431%);
+  --popover: hsl(0 0% 100%);
+  --popover-foreground: hsl(210 25% 7.8431%);
+  --primary: hsl(244.7 58% 63.9%);
+  --primary-foreground: hsl(0 0% 100%);
+  --secondary: hsl(210 25% 7.8431%);
+  --secondary-foreground: hsl(0 0% 100%);
+  --muted: hsl(240 1.9608% 90%);
+  --muted-foreground: hsl(210 25% 7.8431%);
+  --accent: hsl(211.5789 51.3514% 92.7451%);
+  --accent-foreground: hsl(244.7 58% 63.9%);
+  --destructive: hsl(356.3033 90.5579% 54.3137%);
+  --destructive-foreground: hsl(0 0% 100%);
+  --border: hsl(201.4286 30.4348% 90.9804%);
+  --input: hsl(200 23.0769% 97.4510%);
+  --ring: hsl(244.7 58% 63.9%);
+  --chart-1: hsl(244.7 58% 63.9%);
+  --chart-2: hsl(159.7826 100% 36.0784%);
+  --chart-3: hsl(42.0290 92.8251% 56.2745%);
+  --chart-4: hsl(147.1429 78.5047% 41.9608%);
+  --chart-5: hsl(341.4894 75.2000% 50.9804%);
+  --sidebar: hsl(180 6.6667% 97.0588%);
+  --sidebar-foreground: hsl(210 25% 7.8431%);
+  --sidebar-primary: hsl(244.7 58% 63.9%);
+  --sidebar-primary-foreground: hsl(0 0% 100%);
+  --sidebar-accent: hsl(211.5789 51.3514% 92.7451%);
+  --sidebar-accent-foreground: hsl(244.7 58% 63.9%);
+  --sidebar-border: hsl(205.0000 25.0000% 90.5882%);
+  --sidebar-ring: hsl(244.7 58% 63.9%);
+  
+  /* Cyberpunk chat colors */
+  --ai-green: hsl(180 100% 45%);
+  --ai-green-light: hsl(180 100% 95%);
+  --chat-bg: hsl(220 27% 5%);
+  --message-bg: hsl(220 15% 12%);
+  --ai-message-bg: hsl(180 100% 8%);
+  --user-message-bg: hsl(195 100% 50%);
+  --cyber-neon: hsl(195 100% 50%);
+  --cyber-pink: hsl(320 100% 60%);
+  --cyber-green: hsl(120 100% 50%);
+  --cyber-grid: hsl(195 100% 15%);
+  
+  --font-sans: 'Inter', 'Open Sans', sans-serif;
+  --font-serif: Georgia, serif;
+  --font-mono: Menlo, monospace;
+  --radius: 1.3rem;
+}
+
+.dark {
+  --background: hsl(220 27% 5%);
+  --foreground: hsl(195 100% 85%);
+  --card: hsl(220 30% 8%);
+  --card-foreground: hsl(195 100% 85%);
+  --popover: hsl(220 30% 8%);
+  --popover-foreground: hsl(195 100% 85%);
+  --primary: hsl(195 100% 50%);
+  --primary-foreground: hsl(220 30% 3%);
+  --secondary: hsl(220 25% 15%);
+  --secondary-foreground: hsl(195 100% 85%);
+  --muted: hsl(220 25% 15%);
+  --muted-foreground: hsl(195 50% 65%);
+  --accent: hsl(195 100% 50%);
+  --accent-foreground: hsl(220 30% 3%);
+  --destructive: hsl(0 84.2% 60.2%);
+  --destructive-foreground: hsl(210 40% 98%);
+  --border: hsl(195 100% 25%);
+  --input: hsl(220 25% 12%);
+  --ring: hsl(195 100% 50%);
+  --chart-1: hsl(220 70% 50%);
+  --chart-2: hsl(160 60% 45%);
+  --chart-3: hsl(30 80% 55%);
+  --chart-4: hsl(280 65% 60%);
+  --chart-5: hsl(340 75% 55%);
+  --sidebar: hsl(220 30% 8%);
+  --sidebar-foreground: hsl(195 100% 85%);
+  --sidebar-primary: hsl(195 100% 50%);
+  --sidebar-primary-foreground: hsl(220 30% 3%);
+  --sidebar-accent: hsl(195 100% 50%);
+  --sidebar-accent-foreground: hsl(220 30% 3%);
+  --sidebar-border: hsl(195 100% 25%);
+  --sidebar-ring: hsl(195 100% 50%);
+  
+  /* Cyberpunk dark mode colors */
+  --ai-green: hsl(180 100% 45%);
+  --ai-green-light: hsl(180 100% 10%);
+  --chat-bg: hsl(220 27% 5%);
+  --message-bg: hsl(220 15% 12%);
+  --ai-message-bg: hsl(180 100% 8%);
+  --user-message-bg: hsl(195 100% 50%);
+  --cyber-neon: hsl(195 100% 50%);
+  --cyber-pink: hsl(320 100% 60%);
+  --cyber-green: hsl(120 100% 50%);
+  --cyber-grid: hsl(195 100% 15%);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-sans antialiased bg-background text-foreground;
+  }
+}
+
+@layer utilities {
+  .bg-chat-bg {
+    background-color: var(--chat-bg);
+  }
+  
+  .bg-message-bg {
+    background-color: var(--message-bg);
+  }
+  
+  .bg-ai-message-bg {
+    background-color: var(--ai-message-bg);
+  }
+  
+  .bg-user-message-bg {
+    background-color: var(--user-message-bg);
+  }
+  
+  .bg-ai-green {
+    background-color: var(--ai-green);
+  }
+  
+  .bg-ai-green-light {
+    background-color: var(--ai-green-light);
+  }
+  
+  .text-ai-green {
+    color: var(--ai-green);
+  }
+  
+  .border-ai-green {
+    border-color: var(--ai-green);
+  }
+  
+  /* Cyberpunk effects */
+  .cyberpunk-grid {
+    background-image: 
+      linear-gradient(rgba(0, 255, 255, 0.1) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 255, 255, 0.1) 1px, transparent 1px);
+    background-size: 20px 20px;
+    animation: grid-move 20s linear infinite;
+  }
+  
+  .neon-glow {
+    box-shadow: 
+      0 0 5px var(--cyber-neon),
+      0 0 10px var(--cyber-neon),
+      0 0 15px var(--cyber-neon);
+    border: 1px solid var(--cyber-neon);
+  }
+  
+  .neon-text {
+    color: var(--cyber-neon);
+    text-shadow: 
+      0 0 1px var(--cyber-neon),
+      0 0 2px var(--cyber-neon);
+  }
+  
+  .holographic {
+    background: linear-gradient(135deg, 
+      rgba(0, 255, 255, 0.1) 0%, 
+      rgba(255, 0, 255, 0.1) 50%, 
+      rgba(0, 255, 255, 0.1) 100%);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(0, 255, 255, 0.3);
+  }
+  
+  .cyber-button {
+    background: linear-gradient(45deg, 
+      var(--cyber-neon) 0%, 
+      var(--cyber-pink) 100%);
+    border: none;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .cyber-button:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+      transparent 0%, 
+      rgba(255, 255, 255, 0.2) 50%, 
+      transparent 100%);
+    animation: shine 2s infinite;
+  }
+  
+  @keyframes grid-move {
+    0% { background-position: 0 0; }
+    100% { background-position: 20px 20px; }
+  }
+  
+  @keyframes shine {
+    0% { left: -100%; }
+    100% { left: 100%; }
+  }
+  
+  @keyframes pulse-neon {
+    0%, 100% { 
+      box-shadow: 
+        0 0 5px var(--cyber-neon),
+        0 0 10px var(--cyber-neon),
+        0 0 15px var(--cyber-neon);
+    }
+    50% { 
+      box-shadow: 
+        0 0 10px var(--cyber-neon),
+        0 0 20px var(--cyber-neon),
+        0 0 30px var(--cyber-neon);
+    }
+  }
+
+  /* Logo cyberpunk styling - changes white background to dark, keeps boomerang unchanged */
+  .logo-cyberpunk {
+    position: relative;
+    background: hsl(220 27% 5%) !important;
+    border-radius: 0.5rem;
+    padding: 8px;
+  }
+}

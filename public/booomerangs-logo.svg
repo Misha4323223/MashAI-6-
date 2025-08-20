@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 300" width="800" height="300">
+  <!-- BOOOMERANGS logo with curved path -->
+  <defs>
+    <path id="curve" d="M 50 220 Q 400 130 750 220"/>
+  </defs>
+  
+  <!-- Teal/turquoise text with outline style -->
+  <text font-family="Arial, sans-serif" font-size="38" font-weight="bold" fill="none" stroke="#20B2AA" stroke-width="3" text-anchor="middle">
+    <textPath href="#curve" startOffset="50%">
+      BOOOMERANGS
+    </textPath>
+  </text>
+  
+  <!-- Inner lighter fill -->
+  <text font-family="Arial, sans-serif" font-size="38" font-weight="bold" fill="#48D1CC" text-anchor="middle">
+    <textPath href="#curve" startOffset="50%">
+      BOOOMERANGS
+    </textPath>
+  </text>
+</svg>
